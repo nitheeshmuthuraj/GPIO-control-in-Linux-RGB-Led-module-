@@ -133,27 +133,6 @@ int gpio_get_value(unsigned int gpio, unsigned int *value)
 }
 
 
-/****************************************************************
- * gpio_set_edge
- ****************************************************************/
-
-int gpio_set_edge(unsigned int gpio, char *edge)
-{
-	int fd, len;
-	char buf[MAX_BUF];
-
-	len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/edge", gpio);
-
-	fd = open(buf, O_WRONLY);
-	if (fd < 0) {
-		perror("gpio/set-edge");
-		return fd;
-	}
-
-	write(fd, edge, strlen(edge) + 1);
-	close(fd);
-	return 0;
-}
 
 /****************************************************************
  * gpio_fd_open  for value
@@ -190,23 +169,7 @@ int gpio_fd_open_read(unsigned int gpio)
 	}
 	return fd;
 }
-/****************************************************************
- * gpio_fd_open_edge
- ****************************************************************/
 
-int gpio_fd_open_edge(unsigned int gpio)
-{
-	int fd, len;
-	char buf[MAX_BUF];
-
-	len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/edge", gpio);
-
-	fd = open(buf, O_RDONLY | O_WRONLY | O_NONBLOCK );
-	if (fd < 0) {
-		perror("gpio/fd_open_edge");
-	}
-	return fd;
-}
 
 /****************************************************************
  * gpio_fd_close
@@ -217,6 +180,12 @@ int gpio_fd_close(int fd)
 	return close(fd);
 }
 
+
+
+/****************************************************************
+ * multiplex the gpio pins
+ ****************************************************************/
+
 int mux_gpio_set(unsigned int gpio, unsigned int value)
 {
 	gpio_export(gpio);
@@ -226,6 +195,10 @@ int mux_gpio_set(unsigned int gpio, unsigned int value)
 	return 0;
 }
 
+/****************************************************************
+ * Retrive the corresponding GPIO pins for the given IO pins
+   and multiplex them
+ ****************************************************************/
 
 int gpio_pins(int io)
 {

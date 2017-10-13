@@ -11,7 +11,7 @@ ARCH = x86
 CROSS_COMPILE = i586-poky-linux-
 SROOT=$(IOT_HOME)/i586-poky-linux/
 
-APP1 = example1
+APP1 = RGBLed
 APP2 = example2
 
 all:
@@ -21,3 +21,4 @@ all:
 clean:
 	rm -f *.o
 	rm -f $(APP)
+	rm -rf RGBLed
